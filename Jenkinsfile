@@ -54,6 +54,29 @@ pipeline {
             }
         }
 
+
+        stage('Publish to Nexus') {
+            steps {
+                nexusArtifactUploader(
+                credentialsId: 'your-nexus-credentials-id',
+                groupId: 'com.demo.project',
+                artifactId: 'insecure-bank',
+                version: '1.0.0',
+                nexusUrl: "${NEXUS_REPO_URL}",
+                nexusVersion: 'nexus3',
+                protocol: 'http',
+                repository: 'snapshots',
+                artifacts: [[
+                artifactId: 'insecure-bank',
+                classifier: '',
+                file: 'target/insecure-bank-1.0.0.war'
+            ]]
+        )
+    }
+}
+
+
+
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t $DOCKER_HUB_REPO:$BUILD_NUMBER ."
