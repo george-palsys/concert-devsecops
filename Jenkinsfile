@@ -15,6 +15,11 @@ pipeline {
     }
 
     stages {
+        stage('Clean Workspace') {
+             steps {
+        deleteDir()  
+            }
+        }
         stage('Checkout Source Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/george-palsys/concert-devsecops.git'
