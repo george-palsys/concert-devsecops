@@ -2,7 +2,8 @@ pipeline {
     agent { label 'RHEL-9.3' }
 
     environment {
-        DOCKER_IMAGE = 'georgechiu/insecure-bank:v1'
+        DOCKER_IMAGE = 'docker.io/georgechiu/insecure-bank'
+        BUILD_NUMBER = 'v1'
         DOCKER_HUB_REPO = 'georgechiu/insecure-bank'
         NEXUS_REPO_URL = 'http://10.107.85.174:8081/repository/insecurity-bank-artifacts/'
         BLACKDUCK_URL = 'https://10.107.85.166/'
