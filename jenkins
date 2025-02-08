@@ -1,0 +1,68 @@
+pipeline {
+    agent { label 'rhel9.3-agent' }
+
+    environment {
+        DOCKER_IMAGE = 'my-app:latest'
+        DOCKER_HUB_REPO = 'mydockerhub/my-app'
+        NEXUS_REPO_URL = 'http://nexus.local:8081/repository/maven-releases/'
+        BLACKDUCK_URL = 'http://blackduck.local'
+        OCP_NAMESPACE = 'devops'
+        OCP_DEPLOYMENT = 'my-app'
+    }
+
+    stages {
+        stage('Checkout Source Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/myorg/myrepo.git'
+            }
+        }
+
+        stage('Build & Package') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('SCA Scan with Black Duck') {
+            steps {
+                sh "detect.sh --blackduck.url=$BLACKDUCK_URL --blackduck.api.token=your-token --detect.project.name=my-app"
+            }
+        }
+
+        stage('Publish to Nexus') {
+            steps {
+                sh "mvn deploy -Drepository.url=$NEXUS_REPO_URL -DskipTests"
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t $DOCKER_HUB_REPO:$BUILD_NUMBER ."
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                    sh "docker push $DOCKER_HUB_REPO:$BUILD_NUMBER"
+                }
+            }
+        }
+
+        stage('Trigger ArgoCD Deployment') {
+            steps {
+                sh "argocd app sync my-app"
+            }
+        }
+
+        stage('Deploy to OpenShift') {
+            steps {
+                sh """
+                oc project $OCP_NAMESPACE
+                oc set image deployment/$OCP_DEPLOYMENT my-app=$DOCKER_HUB_REPO:$BUILD_NUMBER
+                oc rollout restart deployment/$OCP_DEPLOYMENT
+                """
+            }
+        }
+    }
+}
