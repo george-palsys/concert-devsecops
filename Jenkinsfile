@@ -38,6 +38,7 @@ pipeline {
                         curl -s -L https://detect.blackduck.com/detect10.sh -o detect10.sh
                         bash detect10.sh --blackduck.url=${env.BLACKDUCK_URL} \
                                          --blackduck.api.token=${env.BLACKDUCK_ACCESS_TOKEN} \
+                                         --blackduck.trust.cert=true \
                                          --detect.output.path=output \
                                          --detect.detector.search.depth=5 \
                                          --detect.project.name=${env.BLACKDUCK_PROJECT_NAME} \
