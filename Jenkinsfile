@@ -11,7 +11,7 @@ pipeline {
         BLACKDUCK_ACCESS_TOKEN = 'Yjk5OWU5Y2MtNjA1Yi00YTA5LWFkY2EtMWY2YmU2YmFjNmQ3OjM2NDVjNGJhLWUzYjItNGIxMi1iZTEyLWJiNTU0ODViZmUwYw=='
         BLACKDUCK_PROJECT_NAME = 'insecure-bank-demo'
         $BLACKDUCK_VERSION_NAME = 'developerment'
-        SRC_PATH = './concert-devsecops/'
+        SRC_PATH = '.'
     }
 
     stages {
@@ -29,7 +29,16 @@ pipeline {
 
         stage('SCA Scan with Black Duck') {
             steps {
-                sh "bash <(curl -s -L https://detect.blackduck.com/detect10.sh) --blackduck.url=$BLACKDUCK_URL --blackduck.api.token=$BLACKDUCK_ACCESS_TOKEN --detect.output.path="output" --detect.detector.search.depth=5 --detect.project.name=$BLACKDUCK_PROJECT_NAME --detect.project.version.name=$BLACKDUCK_VERSION_NAME --detect.source.path=$SRC_PATH "
+                    sh """
+                        curl -s -L https://detect.blackduck.com/detect10.sh -o detect10.sh
+                        bash detect10.sh --blackduck.url=${env.BLACKDUCK_URL} \
+                                         --blackduck.api.token=${env.BLACKDUCK_ACCESS_TOKEN} \
+                                         --detect.output.path=output \
+                                         --detect.detector.search.depth=5 \
+                                         --detect.project.name=${env.BLACKDUCK_PROJECT_NAME} \
+                                         --detect.project.version.name=${env.BLACKDUCK_VERSION_NAME} \
+                                         --detect.source.path=${env.SRC_PATH}
+                    """
             }
         }
 
