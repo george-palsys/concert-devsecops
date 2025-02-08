@@ -8,7 +8,7 @@ WORKDIR /opt/ol/wlp/usr/servers/defaultServer
 COPY server.xml /config/
 
 # 拷贝 WAR 文件到 Liberty 的应用目录
-COPY insecure-bank.war /config/dropins/
+COPY target/insecure-bank.war /config/dropins/
 
 # 暴露 Liberty 默认的 HTTP 和 HTTPS 端口
 EXPOSE 9080 9443
