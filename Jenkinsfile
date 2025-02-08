@@ -12,7 +12,6 @@ pipeline {
         BLACKDUCK_PROJECT_NAME = 'insecure-bank-demo'
         BLACKDUCK_VERSION_NAME = 'developerment'
         SRC_PATH = '.'
-        NEXUS_REPO_URL = 'http://10.107.85.174:8081/repository/insecurity-bank-artifacts/'
     }
 
     stages {
