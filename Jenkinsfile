@@ -50,7 +50,7 @@ pipeline {
 
         stage('Publish to Nexus') {
             steps {
-                    nexusArtifactUploader(credentialsId: 'nexus',groupId: 'com.demo.project',version: '1.0.0',nexusUrl: "${NEXUS_REPO_URL}",nexusVersion: 'nexus3',protocol: 'http',repository: 'snapshots',artifacts: [[artifactId: 'insecure-bank',classifier: '',file: 'target/insecure-bank-1.0.0.war']]
+                    nexusArtifactUploader artifacts: [[artifactId: 'insecure-bank', classifier: '', file: 'target/insecure-bank.war', type: 'war']], credentialsId: 'nexus', groupId: 'in.javahome', nexusUrl: '10.107.85.174:8081/repository/insecurity-bank-artifacts/', nexusVersion: 'nexus3', protocol: 'http', repository: 'insecurity-bank-artifacts', version: '1.0.0'
                 )
            }
         }
