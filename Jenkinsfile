@@ -10,7 +10,7 @@ pipeline {
         OCP_DEPLOYMENT = 'insecurity-bank'
         BLACKDUCK_ACCESS_TOKEN = 'Yjk5OWU5Y2MtNjA1Yi00YTA5LWFkY2EtMWY2YmU2YmFjNmQ3OjM2NDVjNGJhLWUzYjItNGIxMi1iZTEyLWJiNTU0ODViZmUwYw=='
         BLACKDUCK_PROJECT_NAME = 'insecure-bank-demo'
-        $BLACKDUCK_VERSION_NAME = 'developerment'
+        BLACKDUCK_VERSION_NAME = 'developerment'
         SRC_PATH = '.'
     }
 
