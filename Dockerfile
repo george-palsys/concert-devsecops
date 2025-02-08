@@ -1,5 +1,5 @@
 # 使用 Liberty Base 镜像（支持 Java 17）
-FROM icr.io/appcafe/open-liberty:kernel-java17-openj9-ubi as base
+FROM icr.io/appcafe/websphere-liberty:full-java17-openj9-ubi
 
 # 设置工作目录
 WORKDIR /opt/ol/wlp/usr/servers/defaultServer
