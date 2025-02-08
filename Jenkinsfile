@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'rhel9.3-agent' }
+    agent { label 'RHEL-9.3' }
 
     environment {
         DOCKER_IMAGE = 'georgechiu/insecure-bank:v1'
