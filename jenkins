@@ -2,18 +2,22 @@ pipeline {
     agent { label 'rhel9.3-agent' }
 
     environment {
-        DOCKER_IMAGE = 'my-app:latest'
-        DOCKER_HUB_REPO = 'mydockerhub/my-app'
-        NEXUS_REPO_URL = 'http://nexus.local:8081/repository/maven-releases/'
-        BLACKDUCK_URL = 'http://blackduck.local'
-        OCP_NAMESPACE = 'devops'
-        OCP_DEPLOYMENT = 'my-app'
+        DOCKER_IMAGE = 'georgechiu/insecure-bank:v1'
+        DOCKER_HUB_REPO = 'georgechiu/insecure-bank'
+        NEXUS_REPO_URL = 'http://10.107.85.174:8081/repository/insecurity-bank-artifacts/'
+        BLACKDUCK_URL = 'https://10.107.85.166/'
+        OCP_NAMESPACE = 'concert-demo'
+        OCP_DEPLOYMENT = 'insecurity-bank'
+        BLACKDUCK_ACCESS_TOKEN = 'Yjk5OWU5Y2MtNjA1Yi00YTA5LWFkY2EtMWY2YmU2YmFjNmQ3OjM2NDVjNGJhLWUzYjItNGIxMi1iZTEyLWJiNTU0ODViZmUwYw=='
+        BLACKDUCK_PROJECT_NAME = 'insecure-bank-demo'
+        $BLACKDUCK_VERSION_NAME = 'developerment'
+        SRC_PATH = './concert-devsecops/'
     }
 
     stages {
         stage('Checkout Source Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/myorg/myrepo.git'
+                git branch: 'main', url: 'https://github.com/george-palsys/concert-devsecops.git'
             }
         }
 
@@ -25,7 +29,7 @@ pipeline {
 
         stage('SCA Scan with Black Duck') {
             steps {
-                sh "detect.sh --blackduck.url=$BLACKDUCK_URL --blackduck.api.token=your-token --detect.project.name=my-app"
+                sh "bash <(curl -s -L https://detect.blackduck.com/detect10.sh) --blackduck.url=$BLACKDUCK_URL --blackduck.api.token=$BLACKDUCK_ACCESS_TOKEN --detect.output.path="output" --detect.detector.search.depth=5 --detect.project.name=$BLACKDUCK_PROJECT_NAME --detect.project.version.name=$BLACKDUCK_VERSION_NAME --detect.source.path=$SRC_PATH "
             }
         }
 
