@@ -57,7 +57,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t $DOCKER_HUB_REPO:$BUILD_NUMBER ."
+                sh "docker build -t docker.io/$DOCKER_HUB_REPO:$BUILD_NUMBER ."
             }
         }
 
