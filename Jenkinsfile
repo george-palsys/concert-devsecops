@@ -77,7 +77,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'argocd-credential', passwordVariable: 'password', usernameVariable: 'username')]){
                sh '''
-                    argocd login openshift-gitops-server-openshift-gitops.apps.george.ocplab.com --username $username --password $password
+                    argocd login openshift-gitops-server-openshift-gitops.apps.george.ocplab.com --username $username --password $password  --insecure
                     argocd app create insecure-bank-dev --repo https://github.com/george-palsys/concert-devsecops-manifests.git --path insecure-bank-dev --dest-server https://kubernetes.default.svc --dest-namespace insecure-bank-dev
                 '''
               }
