@@ -73,21 +73,20 @@ pipeline {
             }
         }
 
-
-
-        stage('Trigger ArgoCD Deployment') {
+        stage ('Loggin ArgoCD') {
             steps {
-                sh "argocd app sync my-app"
+                withCredentials([usernamePassword(credentialsId: 'argocd-credential', passwordVariable: 'password', usernameVariable: 'username')]){
+               sh '''
+                    argocd login openshift-gitops-server-openshift-gitops.apps.george.ocplab.com --username $username --password $password
+                    argocd app create insecure-bank-dev --repo https://github.com/george-palsys/concert-devsecops-manifests.git --path insecure-bank-dev --dest-server https://kubernetes.default.svc --dest-namespace insecure-bank-dev
+                '''
+              }
             }
         }
 
-        stage('Deploy to OpenShift') {
+        stage('Trigger ArgoCD Deployment') {
             steps {
-                sh """
-                oc project $OCP_NAMESPACE
-                oc set image deployment/$OCP_DEPLOYMENT my-app=$DOCKER_HUB_REPO:$BUILD_NUMBER
-                oc rollout restart deployment/$OCP_DEPLOYMENT
-                """
+                sh "argocd app sync insecure-bank-dev"
             }
         }
     }
