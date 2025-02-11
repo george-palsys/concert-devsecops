@@ -60,6 +60,7 @@ pipeline {
                 sh "docker build -t docker.io/$DOCKER_HUB_REPO:$BUILD_NUMBER ."
             }
         }
+        
 
         stage('Push Docker Image to Docker Hub') {
             steps {
@@ -68,6 +69,19 @@ pipeline {
                 }
             }
         }
+
+        stage ('Push Docker Image to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'password', usernameVariable: 'username')]){
+               sh '''
+                    docker login -u $username -p $password
+                    docker push $DOCKER_HUB_REPO:$BUILD_NUMBER
+                '''
+              }
+            }
+        }
+
+
 
         stage('Trigger ArgoCD Deployment') {
             steps {
