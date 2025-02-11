@@ -62,14 +62,6 @@ pipeline {
         }
         
 
-        stage('Push Docker Image to Docker Hub') {
-            steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh "docker push $DOCKER_HUB_REPO:$BUILD_NUMBER"
-                }
-            }
-        }
-
         stage ('Push Docker Image to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'password', usernameVariable: 'username')]){
