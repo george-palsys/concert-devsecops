@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Checkout Source Code') {
             steps {
-                git branch: 'main', url: '$SOURCE_CODE_REPO'
+                git branch: 'main', url: $SOURCE_CODE_REPO
             }
         }
 
