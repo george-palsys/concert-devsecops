@@ -2,7 +2,6 @@ pipeline {
     agent { label 'RHEL-9.3' }
 
     environment {
-        SOURCE_CODE_REPO = 'https://github.com/george-palsys/concert-devsecops.git'
         DOCKER_IMAGE = 'docker.io/georgechiu/liberity'
         BUILD_NUMBER = 'v1'
         DOCKER_HUB_REPO = 'georgechiu/liberity'
@@ -30,7 +29,7 @@ pipeline {
         }
         stage('Checkout Source Code') {
             steps {
-                git branch: 'main', url: $SOURCE_CODE_REPO
+                git branch: 'main', url: 'https://github.com/george-palsys/concert-devsecops.git'
             }
         }
 
