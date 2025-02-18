@@ -1,12 +1,12 @@
-FROM icr.io/appcafe/open-liberty:kernel-slim-java11-openj9-ubi
+FROM icr.io/appcafe/open-liberty:kernel-slim-java17-openj9-ubi
 
 ARG VERSION=1.0
 ARG REVISION=SNAPSHOT
 
 LABEL \
-  org.opencontainers.image.authors="Your Name" \
-  org.opencontainers.image.vendor="IBM" \
-  org.opencontainers.image.url="local" \
+  org.opencontainers.image.authors="George Chiu" \
+  org.opencontainers.image.vendor="Palsys" \
+  org.opencontainers.image.url="https://hub.docker.com/repository/docker/georgechiu/liberity/tags" \
   org.opencontainers.image.source="https://github.com/OpenLiberty/guide-getting-started" \
   org.opencontainers.image.version="$VERSION" \
   org.opencontainers.image.revision="$REVISION" \

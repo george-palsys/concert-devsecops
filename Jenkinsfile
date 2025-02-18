@@ -2,6 +2,7 @@ pipeline {
     agent { label 'RHEL-9.3' }
 
     environment {
+        SOURCE_CODE_REPO = 'https://github.com/george-palsys/concert-devsecops.git'
         DOCKER_IMAGE = 'docker.io/georgechiu/liberity'
         BUILD_NUMBER = 'v1'
         DOCKER_HUB_REPO = 'georgechiu/liberity'
@@ -13,6 +14,12 @@ pipeline {
         BLACKDUCK_PROJECT_NAME = 'liberity-demo'
         BLACKDUCK_VERSION_NAME = 'developerment'
         SRC_PATH = '.'
+        ARGOCD_AP_NAME = 'liberity-dev'
+        MANIFESTS_REPO = 'https://github.com/george-palsys/concert-devsecops-manifests.git'
+        ARGOCD_PATH = 'liberity-dev'
+        DEST-SERVER = 'https://kubernetes.default.svc'
+        ARGOCD_DEPLOY_NAMESPACE = 'liberity-dev'
+        ARGOCD_SERVER= 'openshift-gitops-server-openshift-gitops.apps.george.ocplab.com'
     }
 
     stages {
@@ -23,7 +30,7 @@ pipeline {
         }
         stage('Checkout Source Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/george-palsys/concert-devsecops.git'
+                git branch: 'main', url: '$SOURCE_CODE_REPO'
             }
         }
 
@@ -51,7 +58,7 @@ pipeline {
 
         stage('Publish to Nexus') {
             steps {
-                    nexusArtifactUploader artifacts: [[artifactId: 'insecure-bank', classifier: '', file: 'target/insecure-bank.war', type: 'war']], credentialsId: 'nexus', groupId: 'in.javahome', nexusUrl: '10.107.85.174:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'insecurity-bank-artifacts-hosted', version: '1.0.0'
+                    nexusArtifactUploader artifacts: [[artifactId: 'liberity', classifier: '', file: 'target/insecure-bank.war', type: 'war']], credentialsId: 'nexus', groupId: 'in.javahome', nexusUrl: '10.107.85.174:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'insecurity-bank-artifacts-hosted', version: '1.0.0'
            }
         }
 
@@ -77,8 +84,8 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'argocd-credential', passwordVariable: 'password', usernameVariable: 'username')]){
                sh '''
-                    argocd login openshift-gitops-server-openshift-gitops.apps.george.ocplab.com --username $username --password $password  --insecure
-                    argocd app create insecure-bank-dev --repo https://github.com/george-palsys/concert-devsecops-manifests.git --path insecure-bank-dev --dest-server https://kubernetes.default.svc --dest-namespace insecure-bank-dev
+                    argocd login $ARGOCD_SERVER --username $username --password $password  --insecure
+                    argocd app create $ARGOCD_AP_NAME --repo $MANIFESTS_REPO --path $ARGOCD_PATH --dest-server $DEST-SERVER --dest-namespace $ARGOCD_DEPLOY_NAMESPACE
                 '''
               }
             }
@@ -86,7 +93,7 @@ pipeline {
 
         stage('Trigger ArgoCD Deployment') {
             steps {
-                sh "argocd app sync insecure-bank-dev"
+                sh "argocd app sync $ARGOCD_AP_NAME"
             }
         }
     }
