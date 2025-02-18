@@ -17,7 +17,7 @@ pipeline {
         ARGOCD_AP_NAME = 'liberity-dev'
         MANIFESTS_REPO = 'https://github.com/george-palsys/concert-devsecops-manifests.git'
         ARGOCD_PATH = 'liberity-dev'
-        DEST-SERVER = 'https://kubernetes.default.svc'
+        DEST_SERVER = 'https://kubernetes.default.svc'
         ARGOCD_DEPLOY_NAMESPACE = 'liberity-dev'
         ARGOCD_SERVER= 'openshift-gitops-server-openshift-gitops.apps.george.ocplab.com'
     }
@@ -85,7 +85,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'argocd-credential', passwordVariable: 'password', usernameVariable: 'username')]){
                sh '''
                     argocd login $ARGOCD_SERVER --username $username --password $password  --insecure
-                    argocd app create $ARGOCD_AP_NAME --repo $MANIFESTS_REPO --path $ARGOCD_PATH --dest-server $DEST-SERVER --dest-namespace $ARGOCD_DEPLOY_NAMESPACE
+                    argocd app create $ARGOCD_AP_NAME --repo $MANIFESTS_REPO --path $ARGOCD_PATH --dest-server $DEST_SERVER --dest-namespace $ARGOCD_DEPLOY_NAMESPACE
                 '''
               }
             }
