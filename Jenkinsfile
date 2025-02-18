@@ -2,15 +2,15 @@ pipeline {
     agent { label 'RHEL-9.3' }
 
     environment {
-        DOCKER_IMAGE = 'docker.io/georgechiu/insecure-bank'
+        DOCKER_IMAGE = 'docker.io/georgechiu/liberity'
         BUILD_NUMBER = 'v1'
-        DOCKER_HUB_REPO = 'georgechiu/insecure-bank'
-        NEXUS_REPO_URL = 'http://10.107.85.174:8081/repository/insecurity-bank-artifacts/'
+        DOCKER_HUB_REPO = 'georgechiu/liberity'
+        NEXUS_REPO_URL = 'http://10.107.85.174:8081/repository/liberity/'
         BLACKDUCK_URL = 'https://10.107.85.166/'
         OCP_NAMESPACE = 'concert-demo'
-        OCP_DEPLOYMENT = 'insecurity-bank'
+        OCP_DEPLOYMENT = 'liberity'
         BLACKDUCK_ACCESS_TOKEN = 'Yjk5OWU5Y2MtNjA1Yi00YTA5LWFkY2EtMWY2YmU2YmFjNmQ3OjM2NDVjNGJhLWUzYjItNGIxMi1iZTEyLWJiNTU0ODViZmUwYw=='
-        BLACKDUCK_PROJECT_NAME = 'insecure-bank-demo'
+        BLACKDUCK_PROJECT_NAME = 'liberity-demo'
         BLACKDUCK_VERSION_NAME = 'developerment'
         SRC_PATH = '.'
     }
