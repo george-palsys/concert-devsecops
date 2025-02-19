@@ -57,7 +57,7 @@ pipeline {
 
         stage('Publish to Nexus') {
             steps {
-                    nexusArtifactUploader artifacts: [[artifactId: 'liberity', classifier: '', file: 'target/insecure-bank.war', type: 'war']], credentialsId: 'nexus', groupId: 'in.javahome', nexusUrl: '10.107.85.174:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'insecurity-bank-artifacts-hosted', version: '1.0.0'
+                    nexusArtifactUploader artifacts: [[artifactId: 'guide-getting-started', classifier: '', file: 'target/guide-getting-started.war', type: 'war']], credentialsId: 'nexus', groupId: 'io.openliberty.guides', nexusUrl: '10.107.85.174:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'liberity', version: '1.0.0'
            }
         }
 
