@@ -131,34 +131,30 @@ pipeline {
         stage('Generate SBOM Report') {
             steps {
                 script {
-                    def reportResponse = httpRequest(
+                  def reportResponse = httpRequest(
                         url: "${BLACKDUCK_HOSTNAME}/api/projects/${PROJECT_ID}/versions/${PROJECT_VERSION_ID}/sbom-reports",
-                        httpMode: 'POST',
-                        contentType: 'APPLICATION_JSON',
-                        customHeaders: [[name: 'Authorization', value: "Bearer ${env.BEARER_TOKEN}"]],
-                        requestBody: '''{
+                       httpMode: 'POST',
+                      contentType: 'APPLICATION_JSON',
+                     customHeaders: [[name: 'Authorization', value: "Bearer ${env.BEARER_TOKEN}"]],
+                     requestBody: '''{
                             "reportFormat": "JSON",
                             "sbomType": "CYCLONEDX_15"
                         }'''
                     )
-                    
-                    def reportJson = readJSON text: reportResponse.content
-                    env.REPORT_ID = reportJson.reportId
-                    echo "Report ID: ${env.REPORT_ID}"
 
+                    echo "📌 API Response: ${reportResponse.content}"  // 打印 API 返回内容
 
-            echo "📌 API Response: ${reportResponse.content}"  // 打印 API 返回内容
-
-            if (reportResponse.content?.trim()) {
-                def reportJson = readJSON text: reportResponse.content
-                env.REPORT_ID = reportJson.reportId
-                echo "✅ Report ID: ${env.REPORT_ID}"
-            } else {
-                error "❌ API 没有返回 JSON,无法获取 REPORT_ID"
-            }
+                    if (reportResponse.content?.trim()) {
+                     reportJson = readJSON text: reportResponse.content  // ✅ 这里不要 `def`
+                        env.REPORT_ID = reportJson.reportId
+                        echo "✅ Report ID: ${env.REPORT_ID}"
+                    } else {
+                        error "❌ API 没有返回 JSON, 无法获取 REPORT_ID"
+                 }
                 }
             }
         }
+
 
         stage('Download SBOM Report') {
             steps {
