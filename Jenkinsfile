@@ -142,15 +142,6 @@ pipeline {
                         }'''
                     )
 
-                    echo "📌 API Response: ${reportResponse.content}"  // 打印 API 返回内容
-
-                    if (reportResponse.content?.trim()) {
-                     reportJson = readJSON text: reportResponse.content  // ✅ 这里不要 `def`
-                        env.REPORT_ID = reportJson.reportId
-                        echo "✅ Report ID: ${env.REPORT_ID}"
-                    } else {
-                        error "❌ API 没有返回 JSON, 无法获取 REPORT_ID"
-                 }
                 }
             }
         }
