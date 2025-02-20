@@ -118,7 +118,7 @@ pipeline {
                     echo "Auth Response: ${authResponse.content}"
 
                     if (authResponse.content?.trim()) {
-                        def authJson = readJSON text: authResponse.content
+                        authJson = readJSON text: authResponse.content
                         env.BEARER_TOKEN = authJson.bearerToken
                         echo "Obtained Bearer Token"
                     } else {
