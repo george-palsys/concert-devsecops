@@ -147,16 +147,15 @@ pipeline {
                     echo "Report ID: ${env.REPORT_ID}"
 
 
-                    // 打印 API 返回内容
-                    echo "Report Response: ${reportResponse.content}"
+            echo "📌 API Response: ${reportResponse.content}"  // 打印 API 返回内容
 
-                    if (reportResponse.content?.trim()) {
-                       reportJson = readJSON text: reportResponse.content
-                       env.REPORT_ID = reportJson.reportId
-                       echo "Report ID: ${env.REPORT_ID}"
-                    } else {
-                              error "❌ 生成 SBOM 报告失败：API 返回为空"
-                  }
+            if (reportResponse.content?.trim()) {
+                def reportJson = readJSON text: reportResponse.content
+                env.REPORT_ID = reportJson.reportId
+                echo "✅ Report ID: ${env.REPORT_ID}"
+            } else {
+                error "❌ API 没有返回 JSON,无法获取 REPORT_ID"
+            }
                 }
             }
         }
