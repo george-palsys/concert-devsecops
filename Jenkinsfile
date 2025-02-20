@@ -7,7 +7,7 @@ pipeline {
         DOCKER_HUB_REPO = 'georgechiu/liberity'
         NEXUS_REPO_URL = 'http://10.107.85.174:8081/repository/liberity/'
         BLACKDUCK_URL = 'https://10.107.85.166/'
-        BLACKDUCK_HOSTNAME = 'https://webserver/'
+        BLACKDUCK_HOSTNAME = 'https://webserver'
         OCP_NAMESPACE = 'concert-demo'
         OCP_DEPLOYMENT = 'liberity'
         BLACKDUCK_ACCESS_TOKEN = 'Yjk5OWU5Y2MtNjA1Yi00YTA5LWFkY2EtMWY2YmU2YmFjNmQ3OjM2NDVjNGJhLWUzYjItNGIxMi1iZTEyLWJiNTU0ODViZmUwYw=='
