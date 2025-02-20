@@ -7,6 +7,7 @@ pipeline {
         DOCKER_HUB_REPO = 'georgechiu/liberity'
         NEXUS_REPO_URL = 'http://10.107.85.174:8081/repository/liberity/'
         BLACKDUCK_URL = 'https://10.107.85.166/'
+        BLACKDUCK_HOSTNAME = 'https://webserver/'
         OCP_NAMESPACE = 'concert-demo'
         OCP_DEPLOYMENT = 'liberity'
         BLACKDUCK_ACCESS_TOKEN = 'Yjk5OWU5Y2MtNjA1Yi00YTA5LWFkY2EtMWY2YmU2YmFjNmQ3OjM2NDVjNGJhLWUzYjItNGIxMi1iZTEyLWJiNTU0ODViZmUwYw=='
@@ -45,7 +46,7 @@ pipeline {
             steps {
                     sh """
                         curl -s -L https://detect.blackduck.com/detect10.sh -o detect10.sh
-                        bash detect10.sh --blackduck.url=${env.BLACKDUCK_URL} \
+                        bash detect10.sh --blackduck.url=${env.BLACKDUCK_HOSTNAME} \
                                          --blackduck.api.token=${env.BLACKDUCK_ACCESS_TOKEN} \
                                          --blackduck.trust.cert=true \
                                          --detect.output.path=output \
@@ -102,7 +103,7 @@ pipeline {
             steps {
                 script {
                     def authResponse = httpRequest(
-                        url: "${BLACKDUCK_URL}/api/tokens/authenticate",
+                        url: "${BLACKDUCK_HOSTNAME}/api/tokens/authenticate",
                         httpMode: 'POST',
                         customHeaders: [[name: 'Authorization', value: "token ${BLACKDUCK_ACCESS_TOKEN}"]],
                         acceptType: 'APPLICATION_JSON'
@@ -119,7 +120,7 @@ pipeline {
             steps {
                 script {
                     def reportResponse = httpRequest(
-                        url: "${BLACKDUCK_URL}/api/projects/${PROJECT_ID}/versions/${PROJECT_VERSION_ID}/sbom-reports",
+                        url: "${BLACKDUCK_HOSTNAME}/api/projects/${PROJECT_ID}/versions/${PROJECT_VERSION_ID}/sbom-reports",
                         httpMode: 'POST',
                         contentType: 'APPLICATION_JSON',
                         customHeaders: [[name: 'Authorization', value: "Bearer ${env.BEARER_TOKEN}"]],
@@ -139,7 +140,7 @@ pipeline {
         stage('Download SBOM Report') {
             steps {
                 script {
-                    def downloadUrl = "${BLACKDUCK_URL}/api/projects/${PROJECT_ID}/versions/${PROJECT_VERSION_ID}/reports/${env.REPORT_ID}/download"
+                    def downloadUrl = "${BLACKDUCK_HOSTNAME}/api/projects/${PROJECT_ID}/versions/${PROJECT_VERSION_ID}/reports/${env.REPORT_ID}/download"
                     
                     sh "curl -X GET -H 'Authorization: Bearer ${env.BEARER_TOKEN}' -o sbom_report.json ${downloadUrl}"
                     echo "Downloaded SBOM Report"
