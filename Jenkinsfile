@@ -112,6 +112,18 @@ pipeline {
                     def authJson = readJSON text: authResponse.content
                     env.BEARER_TOKEN = authJson.bearerToken
                     echo "Obtained Bearer Token"
+
+
+                    // 先打印返回内容，确保是 JSON
+                    echo "Auth Response: ${authResponse.content}"
+
+                    if (authResponse.content?.trim()) {
+                        def authJson = readJSON text: authResponse.content
+                        env.BEARER_TOKEN = authJson.bearerToken
+                        echo "Obtained Bearer Token"
+                    } else {
+                        error "Failed to obtain Bearer Token: Empty response from API"
+                    }
                 }
             }
         }
