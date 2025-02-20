@@ -104,7 +104,7 @@ pipeline {
                     def authResponse = httpRequest(
                         url: "${BLACKDUCK_URL}/api/tokens/authenticate",
                         httpMode: 'POST',
-                        customHeaders: [[name: 'Authorization', value: "token ${BLACKDUCK_ACCESS_TOKE}"]],
+                        customHeaders: [[name: 'Authorization', value: "token ${BLACKDUCK_ACCESS_TOKEN}"]],
                         acceptType: 'APPLICATION_JSON'
                     )
                     
