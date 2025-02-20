@@ -19,6 +19,8 @@ pipeline {
         DEST_SERVER = 'https://kubernetes.default.svc'
         ARGOCD_DEPLOY_NAMESPACE = 'liberity-dev'
         ARGOCD_SERVER= 'openshift-gitops-server-openshift-gitops.apps.george.ocplab.com'
+        PROJECT_ID = "9eaddc28-a4e3-49b3-b59f-e5161d7bf599"
+        PROJECT_VERSION_ID = "9126f7b9-0204-4f1d-8d78-461999a3ac3b"
     }
 
     stages {
@@ -93,6 +95,55 @@ pipeline {
         stage('Trigger ArgoCD Deployment') {
             steps {
                 sh "argocd app sync $ARGOCD_AP_NAME"
+            }
+        }
+
+        stage('Get OAuth Token') {
+            steps {
+                script {
+                    def authResponse = httpRequest(
+                        url: "${BLACKDUCK_URL}/api/tokens/authenticate",
+                        httpMode: 'POST',
+                        customHeaders: [[name: 'Authorization', value: "token ${BLACKDUCK_ACCESS_TOKE}"]],
+                        acceptType: 'APPLICATION_JSON'
+                    )
+                    
+                    def authJson = readJSON text: authResponse.content
+                    env.BEARER_TOKEN = authJson.bearerToken
+                    echo "Obtained Bearer Token"
+                }
+            }
+        }
+
+        stage('Generate SBOM Report') {
+            steps {
+                script {
+                    def reportResponse = httpRequest(
+                        url: "${BLACKDUCK_URL}/api/projects/${PROJECT_ID}/versions/${PROJECT_VERSION_ID}/sbom-reports",
+                        httpMode: 'POST',
+                        contentType: 'APPLICATION_JSON',
+                        customHeaders: [[name: 'Authorization', value: "Bearer ${env.BEARER_TOKEN}"]],
+                        requestBody: '''{
+                            "reportFormat": "JSON",
+                            "sbomType": "CYCLONEDX_15"
+                        }'''
+                    )
+                    
+                    def reportJson = readJSON text: reportResponse.content
+                    env.REPORT_ID = reportJson.reportId
+                    echo "Report ID: ${env.REPORT_ID}"
+                }
+            }
+        }
+
+        stage('Download SBOM Report') {
+            steps {
+                script {
+                    def downloadUrl = "${BLACKDUCK_URL}/api/projects/${PROJECT_ID}/versions/${PROJECT_VERSION_ID}/reports/${env.REPORT_ID}/download"
+                    
+                    sh "curl -X GET -H 'Authorization: Bearer ${env.BEARER_TOKEN}' -o sbom_report.json ${downloadUrl}"
+                    echo "Downloaded SBOM Report"
+                }
             }
         }
     }
